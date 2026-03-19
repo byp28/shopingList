@@ -4,7 +4,7 @@ import { StyleSheet, View, Button, TextInput, Alert} from 'react-native';
 export default function AddProduct({submitHandler} : {submitHandler : (prod : string)=>void}) {
 
     const [produit, setProduit] = useState('')
-    const [btnDisabled, setBtnDisabled] = useState(true)
+
 
     const inputHandler = (e:string)=>{
         setProduit(e)
@@ -15,13 +15,6 @@ export default function AddProduct({submitHandler} : {submitHandler : (prod : st
         setProduit('')
     }
 
-    useEffect(()=>{
-        if(produit.length > 1){
-            setBtnDisabled(false)
-        }else{
-            setBtnDisabled(true)
-        }
-    })
 
   return (
     <View style={styles.form}>
@@ -34,7 +27,6 @@ export default function AddProduct({submitHandler} : {submitHandler : (prod : st
         <Button
             title='Ajouter'
             onPress={()=>handleClick()}
-            disabled ={btnDisabled}
         />
     </View>
   )
