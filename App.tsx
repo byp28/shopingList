@@ -1,19 +1,24 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, View, Alert, Text,Modal, Pressable  } from 'react-native';
+import { StyleSheet, FlatList, View, Alert, Text,Modal, Pressable, Button, ImageBackground  } from 'react-native';
+import Error from './component/Error'
 import Produncts from './component/Produncts';
 import AddProduct from './component/AddProduct';
+import DismissKeyBoard from './component/DismissKeyBoard';
+import ButtonComponent from './component/ButtonComponent';
 
 
 function App() {
   
 
   const [myProduct, setMyProduct] = useState<{key : string, name : string}[]>([])
-  const [showModal, setShowModal] = useState(true)
+  const [showModal, setShowModal] = useState(false)
+  const [showAddProduct, setAddProduct] = useState(false)
 
   const submitHandler = (prod : string)=>{
     const id = Date.now().toString()
     if(prod.length > 1){
       setMyProduct(currentMyProduct => [...currentMyProduct, {key : id, name : prod}])
+      setAddProduct(false)
     }else{
       setShowModal(true)
     }
@@ -27,43 +32,29 @@ function App() {
 
 
   return (
-    <View style={styles.container}>
-      <Modal 
-      visible={showModal}
-      onRequestClose={()=> setShowModal(false)}
-      animationType='slide'
-      hardwareAccelerated
-      transparent
-      >
-        <View style={styles.modal}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>OUPPS</Text>
-            <Text style={styles.modalText}>Merci d'indiquer plus d'un caractère</Text>
-            <Pressable onPress={()=>{
-              setShowModal(false)
-              console.warn(showModal)
-            }} style={styles.modalButton}><Text style={[styles.modalText, styles.modalButtonText]}>OK</Text></Pressable>
-          </View>
-        </View>
-      </Modal>
-
-      <AddProduct submitHandler={submitHandler}/>
-      <FlatList
-        data={myProduct}
-        renderItem={({item})=> <Produncts product={item} deleteProduct={deleteProduct} />}
-        keyExtractor={item => item.key}
-      />    
-    </View>
+    <DismissKeyBoard>
+      <ImageBackground source={{uri : "https://i.pinimg.com/736x/3a/be/4a/3abe4a10372e2a06478370d364ba087d.jpg"}} style={styles.container}>
+        <Error showModal={showModal} setShowModal={setShowModal}/>
+        <ButtonComponent style={styles.addBtn} onPressHandler={()=>setAddProduct(true)}>Nouveau Produit</ButtonComponent>
+        <AddProduct show={showAddProduct} cancelProduct={()=> setAddProduct(false)} submitHandler={submitHandler}/>
+        <FlatList
+          data={myProduct}
+          renderItem={({item})=> <Produncts product={item} deleteProduct={deleteProduct} />}
+          keyExtractor={item => item.key}
+        />    
+      </ImageBackground >
+    </DismissKeyBoard>
+    
   );
 }
 
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    minHeight : "100%",
+    flex : 1,
     paddingHorizontal : 20,
     paddingVertical : 40,
+    gap : 20
   },
   modal : {
     flex : 1,
@@ -72,6 +63,9 @@ const styles = StyleSheet.create({
     alignContent  :"center",
     alignItems : "center",
     backgroundColor : "#0000002a"
+  },
+  addBtn : {
+    backgroundColor : "#4ea1ff"
   },
   modalContent : {
     width : "90%",

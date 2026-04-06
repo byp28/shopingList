@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Button, TextInput, Alert} from 'react-native';
+import { StyleSheet, View, Button, TextInput, Modal} from 'react-native';
+import ButtonComponent from './ButtonComponent';
 
-export default function AddProduct({submitHandler} : {submitHandler : (prod : string)=>void}) {
+export default function AddProduct({submitHandler, show, cancelProduct} : {submitHandler : (prod : string)=>void , show : boolean, cancelProduct : ()=>void}) {
 
     const [produit, setProduit] = useState('')
 
@@ -17,18 +18,36 @@ export default function AddProduct({submitHandler} : {submitHandler : (prod : st
 
 
   return (
-    <View style={styles.form}>
-        <TextInput
-            style={styles.input}
-            onChangeText={(e)=>inputHandler(e)}
-            placeholder='Nouveau produit'
-            value={produit}
-        />
-        <Button
-            title='Ajouter'
-            onPress={()=>handleClick()}
-        />
-    </View>
+    <Modal
+      visible={show}
+      animationType='slide'
+    >
+        <View style={styles.form}>
+          <TextInput
+              style={styles.input}
+              onChangeText={(e)=>inputHandler(e)}
+              placeholder='Nouveau produit'
+              value={produit}
+          />
+          <View style={styles.btnContainer}>
+            <ButtonComponent
+              style={ styles.button}
+              onPressHandler={()=>handleClick()}
+            >
+              Ajouter
+            </ButtonComponent>
+
+            
+             <ButtonComponent
+              style={ styles.buttonCancel}
+              onPressHandler={()=>cancelProduct()}
+            >
+              Annuler
+            </ButtonComponent>
+          </View>
+          
+      </View>
+    </Modal>
   )
 }
 
@@ -36,25 +55,28 @@ export default function AddProduct({submitHandler} : {submitHandler : (prod : st
 
 const styles = StyleSheet.create({
   form : {
-    flexDirection : "row",
+    flex : 1,
     justifyContent : "center",
-    alignContent : "center",
-    alignItems : "center",
-    marginBottom : 10,
-    gap:5
+    padding : 25,
+    gap:14
   },
   input : {
-    flexGrow : 1,
+    width : "100%",
     borderColor : "#e0e0e0",
     borderWidth : 2,
     borderRadius : 10,
     paddingHorizontal : 12,
   },
   button: {
-    textAlign : "center",
-    justifyContent : "center",
-    alignContent : "center",
-    height :"100%",
-    borderRadius : 10,
+    width : 150,
+    backgroundColor : "#4ea1ff"
   },
+  buttonCancel: {
+    width : 150,
+    backgroundColor : "#ff4e4e"
+  },
+  btnContainer : {
+    flexDirection : "row",
+    justifyContent : "space-between"
+  }
 });
